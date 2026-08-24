@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIGAP Kota — Halaman Hasil</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { padding: 24px; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); }
+    .wrap { max-width: 980px; margin: 0 auto; background: white; border-radius: 24px; padding: 24px; box-shadow: 0 18px 42px rgba(15,23,42,.08); }
+    .badge { display: inline-block; background: #dcfce7; color: #166534; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-bottom: 10px; }
+    .header-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+    .grid { display: grid; gap: 14px; margin-top: 16px; }
+    .box { border: 1px solid #e2e8f0; border-radius: 18px; padding: 16px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .stepper { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .step { flex: 1; min-width: 140px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; font-size: 13px; }
+    .step.active { background: #eff6ff; border-color: #93c5fd; }
+    .muted { color: #64748b; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .status-message { margin-top: 10px; font-size: 13px; }
+    .status-message.success { color: #15803d; }
+    .status-message.error { color: #b91c1c; }
+    button, a.btn, input, select, textarea { font: inherit; }
+    button, a.btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 14px; border-radius: 999px; text-decoration: none; border: none; cursor: pointer; font-weight: 600; }
+    .btn-primary { background: #2563eb; color: white; }
+    .btn-secondary { background: #e2e8f0; color: #0f172a; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    input, select, textarea { border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 12px; background: white; }
+    textarea { min-height: 100px; resize: vertical; }
+    .dropzone { border: 2px dashed #93c5fd; border-radius: 14px; padding: 18px; text-align: center; color: #2563eb; background: #f8fbff; }
+    .status-pill { display: inline-block; padding: 6px 10px; border-radius: 999px; background: #fef3c7; color: #b45309; font-size: 12px; font-weight: 700; }
+    @media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header-row">
+      <div>
+        <span class="badge">Halaman Hasil</span>
+        <h1>Detail Aduan Berbasis AI</h1>
+        <p class="muted">Ringkasan siap tindak lanjut dari hasil pemrosesan laporan warga.</p>
+      </div>
+      <div>
+        <span class="badge">Tiket #A-1024</span>
+        <div style="margin-top:8px; font-weight:700;">Kategori: Jalan Rusak</div>
+        <div class="muted">Prioritas: Tinggi</div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>1. Header Informasi Utama & Status</h3>
+      <p><strong>ID Tiket:</strong> <span id="ticketId">-</span></p>
+      <p><strong>Kategori:</strong> <span id="category">-</span></p>
+      <p><strong>Prioritas:</strong> <span id="priority">-</span></p>
+      <p><strong>Status:</strong> <span id="statusBadge" class="status-pill">-</span></p>
+    </div>
+
+    <div class="two-col">
+      <div class="box">
+        <h3>2. Input Warga</h3>
+        <p id="inputWarga" class="muted">Memuat data...</p>
+      </div>
+      <div class="box">
+        <h3>3. Rangkuman Resmi AI</h3>
+        <p id="summaryAi">Memuat data...</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="box">
+        <h3>4. Detail Ekstraksi & Validitas</h3>
+        <p><strong>Lokasi:</strong> <span id="location">-</span></p>
+        <p><strong>Waktu:</strong> <span id="timestamp">-</span></p>
+        <p><strong>Validitas:</strong> <span id="validity">-</span></p>
+      </div>
+      <div class="box">
+        <h3>5. Linimasa Progres</h3>
+        <div class="stepper">
+          <div class="step" data-step="0">Laporan Diterima</div>
+          <div class="step" data-step="1">Diverifikasi AI</div>
+          <div class="step" data-step="2">Disposisi ke Dinas</div>
+          <div class="step" data-step="3">Selesai</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>6. Form Tindak Lanjut & Validasi Admin</h3>
+      <div class="field">
+        <label for="statusSelect"><strong>Update Progres</strong></label>
+        <select id="statusSelect">
+          <option value="Menunggu">Menunggu Regu Lapangan</option>
+          <option value="Diproses">Sedang Dikerjakan</option>
+          <option value="Selesai">Selesai</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="photoUpload"><strong>Upload Foto Bukti Perbaikan</strong></label>
+        <div class="dropzone">📷 Klik atau drag & drop foto bukti perbaikan di sini</div>
+        <input id="photoUpload" type="file" accept="image/*" />
+      </div>
+      <div class="field">
+        <label for="notes"><strong>Catatan Petugas</strong></label>
+        <textarea id="notes" placeholder="Contoh: Jalan berlubang sudah ditambal dengan aspal hotmix oleh Dinas PU"></textarea>
+      </div>
+      <div id="statusMessage" class="status-message">Menunggu aksi admin.</div>
+      <div class="actions">
+        <button id="saveBtn" class="btn btn-primary">Simpan Tindak Lanjut</button>
+        <a class="btn btn-secondary" href="admin.html">Kembali ke Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:3000";
+    const params = new URLSearchParams(window.location.search);
+    const reportId = params.get("id");
+
+    const ticketIdEl = document.getElementById("ticketId");
+    const categoryEl = document.getElementById("category");
+    const priorityEl = document.getElementById("priority");
+    const statusBadgeEl = document.getElementById("statusBadge");
+    const inputWargaEl = document.getElementById("inputWarga");
+    const summaryAiEl = document.getElementById("summaryAi");
+    const locationEl = document.getElementById("location");
+    const timestampEl = document.getElementById("timestamp");
+    const validityEl = document.getElementById("validity");
+    const statusSelect = document.getElementById("statusSelect");
+    const notesInput = document.getElementById("notes");
+    const statusMessage = document.getElementById("statusMessage");
+    const saveBtn = document.getElementById("saveBtn");
+    const steps = Array.from(document.querySelectorAll(".step"));
+
+    let currentReport = null;
+
+    function setMessage(text, type = "info") {
+      statusMessage.textContent = text;
+      statusMessage.className = `status-message ${type}`;
+    }
+
+    function updateTracker(status) {
+      const activeIndex = status === "Selesai" ? 3 : status === "Diproses" ? 2 : status === "Menunggu" ? 1 : 0;
+      steps.forEach((step, index) => {
+        step.classList.toggle("active", index <= activeIndex);
+      });
+    }
+
+    function renderReport(report) {
+      currentReport = report;
+      ticketIdEl.textContent = report.id || "-";
+      categoryEl.textContent = report.kategori || "-";
+      priorityEl.textContent = report.prioritas || "-";
+      statusBadgeEl.textContent = report.status || "Menunggu";
+      statusBadgeEl.className = `status-pill ${report.status === "Selesai" ? "" : report.status === "Diproses" ? "" : ""}`;
+      inputWargaEl.textContent = report.alasan || report.ringkasan || "Tidak ada isi laporan yang tercatat.";
+      summaryAiEl.textContent = report.ringkasan || report.alasan || "Ringkasan AI belum tersedia.";
+      locationEl.textContent = report.instansi || "-";
+      timestampEl.textContent = report.created_at || "-";
+      validityEl.textContent = report.status === "Selesai" ? "Valid" : "Valid";
+      statusSelect.value = report.status || "Menunggu";
+      updateTracker(report.status || "Menunggu");
+    }
+
+    async function loadReport() {
+      if (!reportId) {
+        setMessage("Tidak ada ID laporan yang dipilih.", "error");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/api/progress`);
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Gagal memuat laporan.");
+
+        const report = (result.data || []).find((item) => String(item.id) === String(reportId));
+        if (!report) throw new Error("Laporan tidak ditemukan.");
+
+        renderReport(report);
+        setMessage("Laporan berhasil dimuat.", "success");
+      } catch (error) {
+        console.error(error);
+        setMessage(error.message || "Gagal memuat laporan.", "error");
+      }
+    }
+
+    saveBtn.addEventListener("click", async () => {
+      if (!currentReport) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/api/progress/${currentReport.id}/status`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: statusSelect.value })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Gagal memperbarui status.");
+
+        currentReport.status = result.laporan?.status || statusSelect.value;
+        renderReport(currentReport);
+        setMessage(`Status laporan berhasil diperbarui menjadi ${currentReport.status}.`, "success");
+      } catch (error) {
+        console.error(error);
+        setMessage(error.message || "Gagal memperbarui status.", "error");
+      }
+    });
+
+    loadReport();
+  </script>
+</body>
+</html>

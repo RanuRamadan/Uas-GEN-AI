@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIGAP Kota — Admin</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      padding: 24px;
+      background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+      color: #0f172a;
+    }
+
+    .app-shell {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      min-height: calc(100vh - 48px);
+    }
+
+    .sidebar {
+      background: #0f172a;
+      color: white;
+      border-radius: 24px;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 6px;
+      color: #cbd5e1;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .side-info {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    .main-panel {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #2563eb;
+      margin-bottom: 6px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-badge {
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .summary-card {
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .summary-card .num {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .summary-card .lbl {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    select, input, button {
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button.ghost {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .stat-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .stat-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .badge-prioritas-tinggi { background: #fee2e2; color: #b91c1c; }
+    .badge-prioritas-sedang { background: #fef3c7; color: #b45309; }
+    .badge-prioritas-rendah { background: #dcfce7; color: #15803d; }
+    .badge-menunggu { background: #fef3c7; color: #b45309; }
+    .badge-diproses { background: #dbeafe; color: #1d4ed8; }
+    .badge-selesai { background: #dcfce7; color: #15803d; }
+
+    .status-message {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .status-message.success { color: #15803d; }
+    .status-message.error { color: #b91c1c; }
+
+    .hidden { display: none !important; }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    th {
+      color: #64748b;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .empty-state {
+      padding: 24px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .login-card {
+      max-width: 460px;
+      margin: 24px auto 0;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .form-message {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .form-message.error { color: #b91c1c; }
+    .form-message.success { color: #15803d; }
+    .form-message.info { color: #2563eb; }
+
+    @media (max-width: 960px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">SIGAP Kota <small>panel petugas</small></div>
+      <div class="side-info">
+        Dashboard ini menampilkan laporan yang masuk dari warga lewat chat. Petugas bisa memfilter aduan, mengubah status, dan melihat ringkasan statistik secara cepat.
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Admin Dashboard</div>
+          <h1>Kelola Aduan Warga</h1>
+        </div>
+        <div class="topbar-actions">
+          <span id="userBadge" class="user-badge">Belum login</span>
+          <button id="logoutBtn" class="ghost hidden">Keluar</button>
+        </div>
+      </header>
+
+      <section id="loginView" class="card login-card">
+        <h2>Login Petugas</h2>
+        <p>Gunakan akun demo untuk masuk ke dashboard.</p>
+        <form id="loginForm">
+          <div class="form-row">
+            <label for="usernameInput">Username</label>
+            <input id="usernameInput" type="text" placeholder="petugas" required />
+          </div>
+          <div class="form-row">
+            <label for="passwordInput">Password</label>
+            <input id="passwordInput" type="password" placeholder="123456" required />
+          </div>
+          <button type="submit">Masuk</button>
+          <div id="loginMessage" class="form-message info">Username: petugas • Password: 123456</div>
+        </form>
+      </section>
+
+      <section id="dashboardView" class="hidden">
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="num" id="statTotal">0</div>
+            <div class="lbl">Total aduan</div>
+          </div>
+          <div class="summary-card">
+            <div class="num" id="statMenunggu">0</div>
+            <div class="lbl">Menunggu</div>
+          </div>
+          <div class="summary-card">
+            <div class="num" id="statDiproses">0</div>
+            <div class="lbl">Diproses</div>
+          </div>
+          <div class="summary-card">
+            <div class="num" id="statSelesai">0</div>
+            <div class="lbl">Selesai</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="filter-group">
+            <label>
+              Status
+              <select id="filterStatus">
+                <option value="Semua">Semua</option>
+                <option value="Menunggu">Menunggu</option>
+                <option value="Diproses">Diproses</option>
+                <option value="Selesai">Selesai</option>
+              </select>
+            </label>
+            <label>
+              Prioritas
+              <select id="filterPrioritas">
+                <option value="Semua">Semua</option>
+                <option value="Rendah">Rendah</option>
+                <option value="Sedang">Sedang</option>
+                <option value="Tinggi">Tinggi</option>
+              </select>
+            </label>
+          </div>
+          <div id="statusMessage" class="status-message info">Menunggu data...</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Jumlah per kategori</h3>
+            <ul id="categoryStats" class="stat-list"></ul>
+          </div>
+          <div class="card">
+            <h3>Jumlah per status</h3>
+            <ul id="statusStats" class="stat-list"></ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Daftar laporan</h3>
+          <p style="margin-bottom: 10px; color: #64748b;">Klik tombol status untuk mengubah alur aduan secara cepat. Saat status diubah menjadi selesai, sistem akan menyimpan notifikasi untuk pengguna.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Nomor HP</th>
+                  <th>Isi Laporan</th>
+                  <th>Kategori</th>
+                  <th>Prioritas</th>
+                  <th>Instansi</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="reportsBody"></tbody>
+            </table>
+            <div id="reportsEmpty" class="empty-state">Belum ada aduan masuk.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

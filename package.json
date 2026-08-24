@@ -1,0 +1,25 @@
+{
+  "name": "sigap-kota",
+  "version": "1.0.0",
+  "description": "Prototype UAS Generative AI",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon Backend/server.js",
+    "start": "node Backend/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^2.12.0",
+    "better-sqlite3": "^12.11.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "multer": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

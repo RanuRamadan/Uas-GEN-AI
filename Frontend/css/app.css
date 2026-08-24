@@ -1,0 +1,434 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+body{
+    background:#eef3f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+}
+
+/* ========================= */
+/* SHELL                      */
+/* ========================= */
+
+.app-shell{
+    width:100%;
+    max-width:520px;
+    height:100vh;
+
+    background:#ffffff;
+
+    display:flex;
+    flex-direction:column;
+
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
+}
+
+/* ========================= */
+/* HEADER (dipakai bersama)   */
+/* ========================= */
+
+.chat-header{
+    height:75px;
+    background:white;
+    border-bottom:1px solid #ececec;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    flex-shrink:0;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.bot-avatar{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:24px;
+}
+
+.header-left h2{
+    font-size:18px;
+    color:#111827;
+}
+
+.status{
+    font-size:13px;
+    color:#6b7280;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:3px;
+}
+
+.online-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#22c55e;
+}
+
+/* ========================= */
+/* VIEW SWITCHING             */
+/* ========================= */
+
+.view{
+    display:none;
+    flex-direction:column;
+    flex:1;
+    overflow:hidden;
+    min-height:0;
+}
+
+.view.active{
+    display:flex;
+}
+
+/* ========================= */
+/* CHAT VIEW                  */
+/* ========================= */
+
+.chat-body{
+    flex:1;
+    overflow-y:auto;
+    padding:25px;
+    background:#f8fafc;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    scroll-behavior:smooth;
+}
+
+.chat-body::-webkit-scrollbar{ width:6px; }
+.chat-body::-webkit-scrollbar-thumb{ background:#d5d5d5; border-radius:50px; }
+
+.message{ display:flex; width:100%; }
+.message.user{ justify-content:flex-end; }
+.message.ai{ justify-content:flex-start; }
+
+.bubble{
+    max-width:80%;
+    padding:15px 18px;
+    border-radius:22px;
+    line-height:1.7;
+    font-size:14px;
+    word-wrap:break-word;
+}
+
+.message.ai .bubble{
+    background:white;
+    color:#111827;
+    border:1px solid #ececec;
+    border-top-left-radius:6px;
+    box-shadow:0 8px 20px rgba(0,0,0,.05);
+}
+
+.message.user .bubble{
+    background:#2563eb;
+    color:white;
+    border-top-right-radius:6px;
+}
+
+.bubble h3{ margin-bottom:8px; }
+
+.quick-action{ display:flex; flex-wrap:wrap; gap:10px; }
+
+.quick-action button{
+    background:white;
+    border:1px solid #e5e7eb;
+    padding:10px 16px;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.25s;
+    font-size:13px;
+}
+
+.quick-action button:hover{
+    background:#2563eb;
+    color:white;
+    border-color:#2563eb;
+}
+
+/* Analysis card (dari chat.js) */
+.analysis-card h3{ margin-bottom:6px; }
+.analysis-card hr{ border:none; border-top:1px solid #ececec; margin:10px 0; }
+.analysis-card p{ font-size:13.5px; margin-bottom:8px; }
+.analysis-card b{ color:#374151; }
+
+.submit-report{
+    margin-top:6px;
+    width:100%;
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:10px 16px;
+    border-radius:30px;
+    cursor:pointer;
+    font-size:13.5px;
+    font-weight:600;
+    transition:.2s;
+}
+
+.submit-report:hover{ background:#1d4ed8; }
+.submit-report:disabled{ background:#93b4f0; cursor:not-allowed; }
+
+.preview{
+    padding:15px 20px;
+    background:white;
+    border-top:1px solid #ececec;
+    position:relative;
+    flex-shrink:0;
+}
+
+.preview img{ width:110px; border-radius:15px; }
+
+.preview button{
+    position:absolute;
+    top:8px;
+    left:120px;
+    width:28px;
+    height:28px;
+    border:none;
+    border-radius:50%;
+    cursor:pointer;
+    background:#ef4444;
+    color:white;
+}
+
+.chat-footer{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:18px;
+    background:white;
+    border-top:1px solid #ececec;
+    flex-shrink:0;
+}
+
+.upload-btn{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#f3f4f6;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+    transition:.25s;
+}
+
+.upload-btn:hover{ background:#2563eb; color:white; }
+
+.chat-footer input[type=text]{
+    flex:1;
+    height:48px;
+    border:none;
+    background:#f5f6f8;
+    border-radius:50px;
+    padding:0 20px;
+    outline:none;
+    font-size:15px;
+}
+
+.chat-footer button{
+    width:50px;
+    height:50px;
+    border:none;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    font-size:20px;
+    transition:.25s;
+}
+
+.chat-footer button:hover{ transform:scale(1.08); background:#1d4ed8; }
+
+.typing .bubble{
+    display:flex;
+    gap:6px;
+    width:70px;
+    justify-content:center;
+    align-items:center;
+}
+
+.typing span{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#9ca3af;
+    animation:typing 1.2s infinite;
+}
+
+.typing span:nth-child(2){ animation-delay:.2s; }
+.typing span:nth-child(3){ animation-delay:.4s; }
+
+@keyframes typing{
+    0%{ transform:translateY(0); opacity:.3; }
+    50%{ transform:translateY(-6px); opacity:1; }
+    100%{ transform:translateY(0); opacity:.3; }
+}
+
+.hidden{ display:none; }
+
+/* ========================= */
+/* RIWAYAT (PROGRESS) VIEW    */
+/* ========================= */
+
+.progress-body{
+    flex:1;
+    overflow-y:auto;
+    padding:22px;
+    background:#f8fafc;
+}
+
+.search-box{
+    display:flex;
+    gap:8px;
+    margin-bottom:20px;
+}
+
+.search-box input{
+    flex:1;
+    padding:12px 16px;
+    border:1px solid #dfe6f0;
+    border-radius:12px;
+    font-size:14px;
+    outline:none;
+    background:#fff;
+    transition:border-color .15s;
+}
+
+.search-box input:focus{ border-color:#2563eb; }
+
+.search-box button{
+    padding:12px 18px;
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .15s;
+}
+
+.search-box button:hover{ background:#1d4ed8; }
+.search-box button:disabled{ background:#9fb4e8; cursor:not-allowed; }
+
+.empty-state, .error-state, .loading-state{
+    background:#fff;
+    border-radius:16px;
+    padding:36px 20px;
+    text-align:center;
+    color:#6b7280;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.empty-icon, .error-icon{ font-size:32px; margin-bottom:10px; }
+.error-state{ color:#b91c1c; }
+
+.laporan-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.laporan-card{
+    background:#fff;
+    border-radius:16px;
+    padding:16px 18px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+
+.laporan-card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:8px;
+}
+
+.laporan-kategori{ font-weight:600; font-size:14.5px; color:#1a1a2e; }
+.laporan-tanggal{ font-size:12px; color:#9ca3af; white-space:nowrap; }
+
+.laporan-ringkasan{
+    font-size:13.5px;
+    color:#4b5563;
+    line-height:1.5;
+    margin-bottom:12px;
+}
+
+.badge-row{ display:flex; gap:8px; flex-wrap:wrap; }
+
+.badge{
+    font-size:11.5px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:999px;
+}
+
+.badge-status-menunggu{ background:#fef3c7; color:#92400e; }
+.badge-status-diproses{ background:#dbeafe; color:#1e40af; }
+.badge-status-selesai{ background:#d1fae5; color:#065f46; }
+
+.badge-prioritas-tinggi{ background:#fee2e2; color:#991b1b; }
+.badge-prioritas-sedang{ background:#ffedd5; color:#9a3412; }
+.badge-prioritas-rendah{ background:#f3f4f6; color:#374151; }
+
+/* ========================= */
+/* TAB BAR                    */
+/* ========================= */
+
+.tab-bar{
+    display:flex;
+    border-top:1px solid #ececec;
+    background:white;
+    flex-shrink:0;
+}
+
+.tab-btn{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    padding:10px 0 12px;
+    border:none;
+    background:none;
+    cursor:pointer;
+    color:#9ca3af;
+    transition:color .2s;
+}
+
+.tab-icon{ font-size:20px; }
+.tab-label{ font-size:11.5px; font-weight:600; }
+
+.tab-btn.active{ color:#2563eb; }
+
+/* ========================= */
+
+@media(max-width:768px){
+    .app-shell{ max-width:100%; }
+    .bubble{ max-width:90%; }
+}

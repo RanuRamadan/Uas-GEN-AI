@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SIGAP AI</title>
+
+    <link rel="stylesheet" href="css/app.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- HEADER (dinamis sesuai tab aktif) -->
+
+    <header class="chat-header">
+
+        <div class="header-left">
+
+            <div class="bot-avatar" id="headerAvatar">🤖</div>
+
+            <div>
+
+                <h2 id="headerTitle">SIGAP AI</h2>
+
+                <span class="status" id="headerSubtitle">
+                    <span class="online-dot"></span>
+                    Online
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ============ VIEW: CHAT ============ -->
+
+    <section class="view active" id="chatView">
+
+        <main class="chat-body" id="chatBody">
+
+            <div class="message ai">
+                <div class="bubble">
+                    <h3>Halo 👋</h3>
+                    <p>
+                        Saya <strong>SIGAP AI</strong>, asisten cerdas yang akan membantu
+                        membuat laporan pengaduan masyarakat.
+                    </p>
+                    <p>Silakan ceritakan masalah yang sedang terjadi.</p>
+                </div>
+            </div>
+
+            <div class="quick-action">
+                <button>🛣 Jalan Rusak</button>
+                <button>🚦 Lampu Lalu Lintas</button>
+                <button>🗑 Sampah</button>
+                <button>🌳 Pohon Tumbang</button>
+                <button>🌊 Banjir</button>
+                <button>🚧 Infrastruktur</button>
+            </div>
+
+            <div class="message ai typing hidden" id="typing">
+                <div class="bubble">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
+        </main>
+
+        <div class="preview hidden" id="previewContainer">
+            <img id="previewImage">
+            <button id="removeImage">✕</button>
+        </div>
+
+        <footer class="chat-footer">
+
+            <label class="upload-btn">
+                📎
+                <input type="file" id="imageInput" accept="image/*" hidden>
+            </label>
+
+            <input type="text" id="messageInput" placeholder="Tulis laporan Anda...">
+
+            <button id="sendBtn">➤</button>
+
+        </footer>
+
+    </section>
+
+
+    <!-- ============ VIEW: RIWAYAT ============ -->
+
+    <section class="view" id="progressView">
+
+        <main class="progress-body">
+
+            <div class="search-box">
+                <input
+                    type="tel"
+                    id="nomorHpInput"
+                    placeholder="Masukkan nomor HP Anda, mis. 081234567890"
+                    autocomplete="tel">
+                <button id="cekBtn">Cek</button>
+            </div>
+
+            <div id="resultArea">
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <p>Masukkan nomor HP yang Anda gunakan saat melapor untuk melihat status laporan Anda.</p>
+                </div>
+            </div>
+
+        </main>
+
+    </section>
+
+
+    <!-- ============ TAB BAR ============ -->
+
+    <nav class="tab-bar">
+
+        <button class="tab-btn active" data-tab="chatView" data-title="SIGAP AI" data-mode="chat">
+            <span class="tab-icon">💬</span>
+            <span class="tab-label">Chat</span>
+        </button>
+
+        <button class="tab-btn" data-tab="progressView" data-title="Riwayat Laporan" data-mode="progress">
+            <span class="tab-icon">📋</span>
+            <span class="tab-label">Riwayat</span>
+        </button>
+
+    </nav>
+
+</div>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>

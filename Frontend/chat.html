@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SIGAP AI</title>
+
+    <link rel="stylesheet" href="css/chat.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <!-- HEADER -->
+
+    <header class="chat-header">
+
+        <div class="header-left">
+
+            <div class="bot-avatar">
+                🤖
+            </div>
+
+            <div>
+
+                <h2>SIGAP AI</h2>
+
+                <span class="status">
+                    <span class="online-dot"></span>
+                    Online
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- CHAT -->
+
+    <main class="chat-body" id="chatBody">
+
+
+        <!-- WELCOME -->
+
+        <div class="message ai">
+
+            <div class="bubble">
+
+                <h3>Halo 👋</h3>
+
+                <p>
+                    Saya <strong>SIGAP AI</strong>, asisten cerdas yang akan membantu
+                    membuat laporan pengaduan masyarakat.
+                </p>
+
+                <p>
+                    Silakan ceritakan masalah yang sedang terjadi.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- QUICK ACTION -->
+
+        <div class="quick-action">
+
+            <button>🛣 Jalan Rusak</button>
+
+            <button>🚦 Lampu Lalu Lintas</button>
+
+            <button>🗑 Sampah</button>
+
+            <button>🌳 Pohon Tumbang</button>
+
+            <button>🌊 Banjir</button>
+
+            <button>🚧 Infrastruktur</button>
+
+        </div>
+
+
+        <!-- TYPING -->
+
+        <div class="message ai typing hidden" id="typing">
+
+            <div class="bubble">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- PREVIEW FOTO -->
+
+    <div class="preview hidden" id="previewContainer">
+
+        <img id="previewImage">
+
+        <button id="removeImage">
+            ✕
+        </button>
+
+    </div>
+
+
+
+    <!-- INPUT -->
+
+    <footer class="chat-footer">
+
+        <label class="upload-btn">
+
+            📎
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                hidden>
+
+        </label>
+
+
+        <input
+            type="text"
+            id="messageInput"
+            placeholder="Tulis laporan Anda...">
+
+
+        <button id="sendBtn">
+
+            ➤
+
+        </button>
+
+    </footer>
+
+
+</div>
+
+
+<script src="JS/chat.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: rgb(238, 243, 249);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+}
+
+.progress-container {
+    width: 100%;
+    max-width: 480px;
+}
+
+.progress-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.header-icon {
+    width: 48px;
+    height: 48px;
+    background: #3b6fed;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.progress-header h1 {
+    font-size: 20px;
+    color: #1a1a2e;
+}
+
+.progress-header p {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.search-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #dfe6f0;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    transition: border-color 0.15s;
+}
+
+.search-box input:focus {
+    border-color: #3b6fed;
+}
+
+.search-box button {
+    padding: 12px 18px;
+    background: #3b6fed;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+
+.search-box button:hover {
+    background: #2f5bd6;
+}
+
+.search-box button:disabled {
+    background: #9fb4e8;
+    cursor: not-allowed;
+}
+
+/* ==== States ==== */
+
+.empty-state, .error-state, .loading-state {
+    background: #fff;
+    border-radius: 16px;
+    padding: 36px 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.empty-icon, .error-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.error-state {
+    color: #b91c1c;
+}
+
+/* ==== Report cards ==== */
+
+.laporan-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.laporan-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.laporan-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.laporan-kategori {
+    font-weight: 600;
+    font-size: 14.5px;
+    color: #1a1a2e;
+}
+
+.laporan-tanggal {
+    font-size: 12px;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+.laporan-ringkasan {
+    font-size: 13.5px;
+    color: #4b5563;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+/* Status badges */
+.badge-status-menunggu {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-status-diproses {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-status-selesai {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Prioritas badges */
+.badge-prioritas-tinggi {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-prioritas-sedang {
+    background: #ffedd5;
+    color: #9a3412;
+}
+
+.badge-prioritas-rendah {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 22px;
+    font-size: 13px;
+    color: #3b6fed;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
