@@ -1,47 +1,49 @@
 # SIGAP Kota
 
-Tugas UAS Generative AI. Chatbot buat warga lapor masalah kota jalan rusak, sampah numpuk, banjir, dll terus petugas bisa pantau dan tindak lanjuti dari dashboard admin.
+Proyek Ujian Akhir Semester mata kuliah Generative AI. SIGAP Kota adalah chatbot pengaduan warga untuk layanan smart city — warga bisa melaporkan masalah di sekitar mereka seperti jalan rusak, sampah menumpuk, atau banjir, dan petugas dapat memantau serta menindaklanjuti laporan tersebut melalui dashboard admin.
 
-Ada dua pintu masuk: warga buka `index.html` buat ngobrol sama chatbot-nya, admin buka `admin.html` buat lihat dan kelola laporan yang masuk. Nggak ada link dari halaman warga ke admin, jadi akses admin cuma lewat URL langsung cukup buat simulasi pemisahan hak akses doang, belum ada autentikasi beneran.
+Ada dua sisi pengguna: warga mengakses `index.html` untuk berinteraksi dengan chatbot, sementara admin membuka `admin.html` untuk melihat dan mengelola laporan yang masuk. Halaman warga tidak menyertakan tautan ke halaman admin — akses admin hanya bisa dilakukan lewat URL langsung, sekadar untuk mensimulasikan pemisahan hak akses, bukan sistem keamanan sesungguhnya.
 
-## Cara kerjanya
+![Tampilan chatbot SIGAP AI](docs/screenshot-chat.png)
 
-Chatbot-nya nggak langsung nerima laporan mentah-mentah. Dia nanya satu-satu dulu: masalahnya apa, lokasinya di mana, udah parah belum, sejak kapan, sama nomor HP buat kontak. Baru setelah lengkap semua, AI-nya ngeklasifikasiin jadi laporan resmi kategori, prioritas, instansi yang harus nanganin dan muncul ringkasan sebelum warga klik kirim.
+## Cara Kerja
 
-Warga bisa cek status laporannya sendiri lewat nomor HP di tab Riwayat. Petugas login di dashboard admin, lihat semua laporan masuk, ubah status jadi diproses/selesai.
+Chatbot tidak langsung menerima laporan secara mentah. Sebelum sebuah laporan dianggap lengkap, sistem akan menanyakan lima hal secara bertahap: jenis masalah, lokasi kejadian, kondisi atau tingkat keparahannya, waktu kejadian, dan nomor HP untuk keperluan kontak. Setelah kelima data tersebut terkumpul, AI akan mengklasifikasikan laporan — menentukan kategori, prioritas, dan instansi yang relevan — lalu menampilkan ringkasan kepada warga sebelum laporan dikirim.
 
-## Setup
+Warga dapat memantau status laporannya sendiri melalui tab Riwayat dengan memasukkan nomor HP yang sama saat melapor. Di sisi lain, petugas dapat login ke dashboard admin untuk melihat seluruh laporan yang masuk dan memperbarui statusnya menjadi "Diproses" atau "Selesai".
 
-Backend-nya Express + SQLite + Gemini API. Jalanin:
+## Instalasi dan Menjalankan Proyek
+
+Backend proyek ini menggunakan Express, SQLite sebagai database lokal, dan Gemini API untuk kecerdasan buatannya. Untuk memulai, install dependency-nya terlebih dahulu:
 
 ```
 npm install
 ```
 
-Bikin file `.env` di root:
+Buat file `.env` di root proyek dengan isi berikut:
 ```
-GEMINI_API_KEY=api-key-gemini-kamu
+GEMINI_API_KEY=isi_dengan_api_key_gemini_anda
 PORT=3000
 ```
 
-Key-nya ambil gratis di https://aistudio.google.com/apikey.
+API key Gemini dapat diperoleh secara gratis di https://aistudio.google.com/apikey.
 
-Terus:
+Setelah itu, jalankan backend dengan:
 ```
 npm run dev
 ```
 
-Frontend-nya harus dibuka lewat server lokal, jangan double-click file-nya langsung. Paling gampang pakai Live Server di VSCode klik kanan `Frontend/index.html`, pilih Open with Live Server. Atau kalau ada Python, jalanin `python -m http.server 5500` dari folder Frontend terus buka `localhost:5500/index.html`.
+Untuk frontend, buka melalui server lokal, bukan dengan membuka file secara langsung di browser. Cara termudah adalah menggunakan ekstensi Live Server di VSCode — klik kanan pada `Frontend/index.html`, lalu pilih *Open with Live Server*. Alternatifnya, jika Python sudah terpasang, jalankan `python -m http.server 5500` dari dalam folder Frontend, lalu akses melalui `localhost:5500/index.html`.
 
-## Login admin (demo)
+## Login Admin (Demo)
 
 ```
 Username: petugas
 Password: 123456
 ```
 
-Ini hardcoded, bukan sistem login sungguhan — cuma buat kebutuhan demo.
+Kredensial ini masih hardcoded di dalam kode dan hanya digunakan untuk keperluan demonstrasi, bukan sistem autentikasi yang sesungguhnya.
 
-## Yang masih kurang
+## Keterbatasan
 
-Belum ada autentikasi asli, database-nya masih SQLite lokal (belum ada yang di cloud), dan kadang Gemini API-nya kena limit pas lagi rame dipakai orang banyak kalau itu kejadian, backend udah kasih pesan error yang jelas ke user, bukan error mentah.
+Proyek ini belum memiliki sistem autentikasi yang sebenarnya, baik untuk admin maupun warga. Database yang digunakan masih berupa SQLite lokal dan belum terhubung ke layanan cloud. Selain itu, Gemini API terkadang mengalami keterbatasan kapasitas (error 503) saat trafik permintaan sedang tinggi di sisi Google — untuk kasus ini, backend sudah menyediakan pesan error yang informatif bagi pengguna, alih-alih menampilkan error mentah.
