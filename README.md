@@ -4,7 +4,7 @@ Proyek Ujian Akhir Semester mata kuliah Generative AI. SIGAP Kota adalah chatbot
 
 Ada dua sisi pengguna: warga mengakses `index.html` untuk berinteraksi dengan chatbot, sementara admin membuka `admin.html` untuk melihat dan mengelola laporan yang masuk. Halaman warga tidak menyertakan tautan ke halaman admin — akses admin hanya bisa dilakukan lewat URL langsung, sekadar untuk mensimulasikan pemisahan hak akses, bukan sistem keamanan sesungguhnya.
 
-![Tampilan chatbot SIGAP AI](docs/Screenshot 2026-10-08 164701.png)
+![Tampilan chatbot SIGAP AI]('docs/Screenshot 2026-10-08 164701.png')
 
 ## Cara Kerja
 
