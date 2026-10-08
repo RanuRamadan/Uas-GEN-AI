@@ -9,7 +9,10 @@
 
     <link rel="stylesheet" href="css/app.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Cascadia+Mono:ital,wght@0,200..700;1,200..700&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Instrument+Serif:ital@0;1&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
 
 </head>
 
@@ -17,55 +20,36 @@
 
 <div class="app-shell">
 
-    <!-- HEADER (dinamis sesuai tab aktif) -->
 
-    <header class="chat-header">
-
-        <div class="header-left">
-
-            <div class="bot-avatar" id="headerAvatar">🤖</div>
-
-            <div>
-
-                <h2 id="headerTitle">SIGAP AI</h2>
-
-                <span class="status" id="headerSubtitle">
-                    <span class="online-dot"></span>
-                    Online
-                </span>
-
-            </div>
-
-        </div>
-
-    </header>
-
-
-    <!-- ============ VIEW: CHAT ============ -->
-
-    <section class="view active" id="chatView">
+    <section class="view active chat-view" id="chatView">
 
         <main class="chat-body" id="chatBody">
 
-            <div class="message ai">
-                <div class="bubble">
-                    <h3>Halo 👋</h3>
-                    <p>
-                        Saya <strong>SIGAP AI</strong>, asisten cerdas yang akan membantu
-                        membuat laporan pengaduan masyarakat.
-                    </p>
-                    <p>Silakan ceritakan masalah yang sedang terjadi.</p>
+            <section class="chat-welcome" aria-labelledby="welcomeTitle">
+                <div class="welcome-avatar">
+                    <span class="material-symbols-outlined">support_agent</span>
                 </div>
+                <h1 id="welcomeTitle">Saya SIGAP AI</h1>
+                <p>Saya asisten cerdas untuk membantu membuat laporan pengaduan masyarakat. Ceritakan masalah yang sedang terjadi.</p>
+                <div class="availability-badge">
+                    <span class="online-dot"></span>
+                    Siap membantu warga
+                </div>
+            </section>
+
+            <div class="quick-action" aria-hidden="false">
+                <button type="button" data-prompt="Jalan Rusak"><span class="material-symbols-outlined" aria-hidden="true">road</span> Jalan Rusak</button>
+                <button type="button" data-prompt="Lampu Lalu Lintas"><span class="material-symbols-outlined" aria-hidden="true">traffic</span> Lampu Lalu Lintas</button>
+                <button type="button" data-prompt="Sampah"><span class="material-symbols-outlined" aria-hidden="true">delete_outline</span> Sampah</button>
+                <button type="button" data-prompt="Pohon Tumbang"><span class="material-symbols-outlined" aria-hidden="true">park</span> Pohon Tumbang</button>
+                <button type="button" data-prompt="Banjir"><span class="material-symbols-outlined" aria-hidden="true">water</span> Banjir</button>
+                <button type="button" data-prompt="Infrastruktur"><span class="material-symbols-outlined" aria-hidden="true">construction</span> Infrastruktur</button>
             </div>
 
-            <div class="quick-action">
-                <button>🛣 Jalan Rusak</button>
-                <button>🚦 Lampu Lalu Lintas</button>
-                <button>🗑 Sampah</button>
-                <button>🌳 Pohon Tumbang</button>
-                <button>🌊 Banjir</button>
-                <button>🚧 Infrastruktur</button>
-            </div>
+            <button class="quick-action-toggle" id="quickActionToggle" type="button" aria-expanded="true">
+                <span class="material-symbols-outlined">keyboard_arrow_up</span>
+                Sembunyikan pertanyaan cepat
+            </button>
 
             <div class="message ai typing hidden" id="typing">
                 <div class="bubble">
@@ -77,67 +61,38 @@
 
         <div class="preview hidden" id="previewContainer">
             <img id="previewImage">
-            <button id="removeImage">✕</button>
+            <button id="removeImage">
+            <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
         </div>
 
         <footer class="chat-footer">
+            <div class="composer-shortcuts" aria-label="Shortcut laporan">
+                <button type="button" data-prompt="Saya ingin melaporkan jalan rusak">Jalan</button>
+                <button type="button" data-prompt="Saya ingin melaporkan masalah sampah">Sampah</button>
+                <button type="button" data-prompt="Saya ingin melaporkan banjir">Banjir</button>
+                <button type="button" data-action="history">
+                    <span class="material-symbols-outlined">history</span>
+                    Riwayat
+                </button>
+            </div>
 
+            <div class="composer-input">
             <label class="upload-btn">
-                📎
+                <span class="material-symbols-outlined" style="vertical-align: middle;">attach_file</span>
                 <input type="file" id="imageInput" accept="image/*" hidden>
             </label>
 
             <input type="text" id="messageInput" placeholder="Tulis laporan Anda...">
 
-            <button id="sendBtn">➤</button>
-
+            <button id="sendBtn" type="button" aria-label="Kirim pesan">
+                <span class="material-symbols-outlined" style="vertical-align: middle;">send</span>
+            </button>
+            </div>
         </footer>
 
     </section>
 
-
-    <!-- ============ VIEW: RIWAYAT ============ -->
-
-    <section class="view" id="progressView">
-
-        <main class="progress-body">
-
-            <div class="search-box">
-                <input
-                    type="tel"
-                    id="nomorHpInput"
-                    placeholder="Masukkan nomor HP Anda, mis. 081234567890"
-                    autocomplete="tel">
-                <button id="cekBtn">Cek</button>
-            </div>
-
-            <div id="resultArea">
-                <div class="empty-state">
-                    <div class="empty-icon">🔍</div>
-                    <p>Masukkan nomor HP yang Anda gunakan saat melapor untuk melihat status laporan Anda.</p>
-                </div>
-            </div>
-
-        </main>
-
-    </section>
-
-
-    <!-- ============ TAB BAR ============ -->
-
-    <nav class="tab-bar">
-
-        <button class="tab-btn active" data-tab="chatView" data-title="SIGAP AI" data-mode="chat">
-            <span class="tab-icon">💬</span>
-            <span class="tab-label">Chat</span>
-        </button>
-
-        <button class="tab-btn" data-tab="progressView" data-title="Riwayat Laporan" data-mode="progress">
-            <span class="tab-icon">📋</span>
-            <span class="tab-label">Riwayat</span>
-        </button>
-
-    </nav>
 
 </div>
 

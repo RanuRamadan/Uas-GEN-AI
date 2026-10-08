@@ -22,8 +22,6 @@ const loginMessage = document.getElementById("loginMessage");
 const usernameInput = document.getElementById("usernameInput");
 const passwordInput = document.getElementById("passwordInput");
 const logoutBtn = document.getElementById("logoutBtn");
-const userBadge = document.getElementById("userBadge");
-
 const filterStatus = document.getElementById("filterStatus");
 const filterPrioritas = document.getElementById("filterPrioritas");
 const reportsBody = document.getElementById("reportsBody");
@@ -35,6 +33,9 @@ const statSelesai = document.getElementById("statSelesai");
 const categoryStats = document.getElementById("categoryStats");
 const statusStats = document.getElementById("statusStats");
 const statusMessage = document.getElementById("statusMessage");
+
+// Timer untuk menghilangkan pesan status secara otomatis
+let statusTimeout; 
 
 function escapeHtml(value = "") {
   return String(value)
@@ -90,7 +91,6 @@ function renderAuthScreen() {
   dashboardView.classList.toggle("hidden", !isLoggedIn);
 
   if (isLoggedIn) {
-    userBadge.textContent = `Petugas: ${demoUser.username}`;
     loadReports();
   }
 }
@@ -103,18 +103,32 @@ function setMessage(element, text, type = "error") {
 function setStatusMessage(text, type = "info") {
   statusMessage.textContent = text;
   statusMessage.className = `status-message ${type}`;
+  
+  clearTimeout(statusTimeout);
+  statusTimeout = setTimeout(() => {
+    statusMessage.textContent = "";
+    statusMessage.className = "status-message hidden";
+  }, 3000);
 }
 
 function formatDate(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString("id-ID", {
+
+  const now = new Date();
+  const isToday = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+  
+  const time = date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+
+  if (isToday) {
+      return `Hari ini, ${time}`;
+  }
+
+  return date.toLocaleDateString("id-ID", {
     day: "2-digit",
     month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+    year: "numeric"
+  }) + ` - ${time}`;
 }
 
 function badgeClass(status) {
@@ -185,20 +199,25 @@ function renderReports() {
   }
 
   reportsEmpty.classList.add("hidden");
+  
   reportsBody.innerHTML = filtered.map((item) => `
-    <tr class="report-row" data-id="${item.id}">
+    <tr class="report-row" data-id="${item.id}" style="cursor: pointer;" title="Klik untuk melihat detail">
       <td>${escapeHtml(formatDate(item.created_at))}</td>
       <td>${escapeHtml(item.nomor_hp || "-")}</td>
-      <td>${escapeHtml(item.ringkasan || item.alasan || "-")}</td>
-      <td>${escapeHtml(item.kategori || "-")}</td>
+      <td><strong>${escapeHtml(item.kategori || "-")}</strong><br><small style="color: #6b7280;">${escapeHtml(item.ringkasan || item.alasan || "-").substring(0, 50)}...</small></td>
+      <td><span class="status-badge ${badgeClass(item.status)}">${escapeHtml(item.status || "Menunggu")}</span></td>
       <td><span class="status-badge ${priorityClass(item.prioritas)}">${escapeHtml(item.prioritas || "-")}</span></td>
       <td>${escapeHtml(item.instansi || "-")}</td>
-      <td><span class="text-link">Buka detail →</span></td>
+      <td>
+        <span class="text-link" style="display: flex; align-items: center; gap: 4px; color: #2563eb; font-weight: 500;">
+            <span class="material-symbols-outlined" style="font-size: 18px;">open_in_new</span> Detail
+        </span>
+      </td>
     </tr>
   `).join("");
 }
 
-async function loadReports() {
+async function loadReports(isSilent = false) {
   try {
     const response = await fetch(`${API_BASE}/api/progress`);
     if (!response.ok) {
@@ -208,10 +227,15 @@ async function loadReports() {
     const result = await response.json();
     state.reports = Array.isArray(result.data) ? result.data : [];
     renderReports();
-    setStatusMessage("Data aduan berhasil diperbarui.", "info");
+    
+    if (!isSilent) {
+        setStatusMessage("Data aduan berhasil dimuat.", "success");
+    }
   } catch (error) {
     console.error(error);
-    setStatusMessage(error.message || "Tidak bisa terhubung ke server.", "error");
+    if (!isSilent) {
+        setStatusMessage(error.message || "Tidak bisa terhubung ke server.", "error");
+    }
   }
 }
 
@@ -258,13 +282,13 @@ reportsBody.addEventListener("click", (event) => {
 
 window.addEventListener("focus", () => {
   if (sessionStorage.getItem("sigap-admin-auth") === "true") {
-    loadReports();
+    loadReports(true);
   }
 });
 
 setInterval(() => {
   if (sessionStorage.getItem("sigap-admin-auth") === "true") {
-    loadReports();
+    loadReports(true);
   }
 }, 10000);
 

@@ -4,7 +4,6 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// File database disimpan langsung di folder Backend, misal: Backend/sigap.db
 const db = new Database(path.join(__dirname, "sigap.db"));
 
 db.pragma("journal_mode = WAL");

@@ -1,2 +1,5 @@
 node_modules
 .env
+Backend/sigap.db
+Backend/sigap.db-shm
+Backend/sigap.db-wal

@@ -61,8 +61,7 @@ export async function analyzeComplaint(req, res) {
     try {
         const { message, history } = req.body;
 
-        // history: array of { role: "user" | "model", text: string }, dikirim dari frontend
-        // supaya model tetap ingat konteks obrolan sebelumnya (mis. sedang menunggu detail lokasi).
+        
         const contents = [];
 
         if (Array.isArray(history)) {
@@ -80,7 +79,7 @@ export async function analyzeComplaint(req, res) {
         });
 
         const response = await ai.models.generateContent({
-            model: "gemini-3.5-flash", // kuota free tier jauh lebih longgar dibanding gemini-3.5-flash
+            model: "gemini-3.5-flash", 
             config: {
                 systemInstruction: SYSTEM_PROMPT
             },
@@ -96,8 +95,7 @@ export async function analyzeComplaint(req, res) {
         try {
             json = JSON.parse(text);
         } catch (parseErr) {
-            // fallback: kalau model kebetulan tidak mengembalikan JSON valid,
-            // jangan crash - kirim sebagai chat biasa supaya UX tidak putus.
+
             console.error("Gagal parse JSON dari Gemini:", text);
             json = {
                 type: "chat",
@@ -110,9 +108,6 @@ export async function analyzeComplaint(req, res) {
     } catch (err) {
         console.error(err);
 
-        // Gemini API mengirim error 429 kalau kuota/rate limit terlampaui.
-        // Kita deteksi dari pesan errornya dan kasih respons yang jelas,
-        // bukan error mentah yang bikin frontend jatuh ke fallback membingungkan.
         const isRateLimit =
             err.message?.includes("429") ||
             err.message?.includes("RESOURCE_EXHAUSTED") ||
@@ -122,6 +117,18 @@ export async function analyzeComplaint(req, res) {
             return res.status(429).json({
                 type: "chat",
                 reply: "Maaf, sistem sedang sibuk (kuota AI harian sudah tercapai). Coba lagi beberapa saat ya."
+            });
+        }
+
+        const isUnavailable =
+            err.status === 503 ||
+            err.message?.includes("503") ||
+            err.message?.includes("UNAVAILABLE");
+
+        if (isUnavailable) {
+            return res.status(503).json({
+                type: "chat",
+                reply: "Maaf, layanan AI sedang ramai. Silakan coba lagi beberapa saat."
             });
         }
 

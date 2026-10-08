@@ -1,6 +1,3 @@
-/* =====================================================
-   CHAT LOGIC
-===================================================== */
 
 const chatBody = document.getElementById("chatBody");
 const messageInput = document.getElementById("messageInput");
@@ -15,12 +12,13 @@ const typing = document.getElementById("typing");
 
 let selectedImage = null;
 
-// Riwayat percakapan (dikirim ke backend tiap request supaya AI tetap ingat
-// konteks sebelumnya, misalnya lokasi yang sudah pernah disebutkan warga).
 let chatHistory = [];
 
 function scrollBottom() {
-    chatBody.scrollTop = chatBody.scrollHeight;
+    chatBody.scrollTo({
+        top: chatBody.scrollHeight,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"
+    });
 }
 
 function createMessage(text, type = "ai") {
@@ -38,7 +36,7 @@ function createAnalysisCard(data) {
 
     wrapper.innerHTML = `
     <div class="bubble analysis-card">
-        <h3>📋 Ringkasan Laporan</h3>
+        <h3>Ringkasan Laporan</h3>
         <hr>
         <p><b>Kategori</b><br>${data.kategori}</p>
         <p><b>Prioritas</b><br>${data.prioritas}</p>
@@ -46,8 +44,10 @@ function createAnalysisCard(data) {
         <p><b>Ringkasan</b><br>${data.ringkasan}</p>
         <p><b>Alasan</b><br>${data.alasan}</p>
         <p><b>Saran</b><br>${data.saran}</p>
-        <button class="submit-report">📤 Kirim Laporan</button>
-    </div>
+        <button class="submit-report">
+        <span class="material-symbols-outlined" style="vertical-align: middle; font-size: 1.2em;">send</span> Kirim Laporan
+        </button>
+        </div>
     `;
 
     chatBody.appendChild(wrapper);
@@ -82,10 +82,10 @@ function createAnalysisCard(data) {
                 throw new Error(result.error || "Gagal menyimpan laporan.");
             }
 
-            submitBtn.innerText = "✅ Terkirim";
+            submitBtn.innerText = "Terkirim";
 
             createMessage(
-                "Terima kasih! Laporan Anda sudah kami terima dan akan segera ditindaklanjuti. Anda bisa cek statusnya kapan saja lewat tab Riwayat.",
+                "Terima kasih! Laporan Anda sudah kami terima dan akan segera ditindaklanjuti. Anda bisa cek statusnya kapan saja lewat tombol Riwayat di bawah chat.",
                 "ai"
             );
 
@@ -93,8 +93,8 @@ function createAnalysisCard(data) {
 
             console.error(err);
             submitBtn.disabled = false;
-            submitBtn.innerText = "📤 Kirim Laporan";
-            createMessage("❌ Gagal mengirim laporan, coba lagi ya.", "ai");
+            submitBtn.innerText = "Kirim Laporan";
+            createMessage('<span class="material-symbols-outlined" style="vertical-align: middle; color: #d32f2f;">error</span> Gagal mengirim laporan, coba lagi ya.', "ai");
 
         }
 
@@ -112,6 +112,7 @@ async function sendMessage() {
 
     messageInput.value = "";
 
+    chatBody.appendChild(typing);
     typing.classList.remove("hidden");
 
     scrollBottom();
@@ -192,22 +193,46 @@ removeImage.addEventListener("click", () => {
 
 document.querySelectorAll(".quick-action button").forEach(btn => {
     btn.addEventListener("click", () => {
-        messageInput.value = btn.innerText;
+        messageInput.value = btn.dataset.prompt;
+        messageInput.focus();
+    });
+});
+
+const quickActionToggle = document.getElementById("quickActionToggle");
+const quickActionList = document.querySelector(".quick-action");
+
+quickActionToggle.addEventListener("click", () => {
+    const isExpanded = quickActionToggle.getAttribute("aria-expanded") === "true";
+    quickActionToggle.setAttribute("aria-expanded", String(!isExpanded));
+    quickActionList.classList.toggle("is-collapsed", isExpanded);
+    quickActionList.inert = isExpanded;
+    quickActionList.setAttribute("aria-hidden", String(isExpanded));
+    quickActionToggle.lastChild.textContent = isExpanded
+        ? "Tampilkan pertanyaan cepat"
+        : "Sembunyikan pertanyaan cepat";
+});
+
+document.querySelectorAll(".composer-shortcuts [data-prompt]").forEach(btn => {
+    btn.addEventListener("click", () => {
+        messageInput.value = btn.dataset.prompt;
         messageInput.focus();
     });
 });
 
 
-/* =====================================================
-   RIWAYAT (PROGRESS) LOGIC
-===================================================== */
+let historyLookupCard;
 
-const nomorHpInput = document.getElementById("nomorHpInput");
-const cekBtn = document.getElementById("cekBtn");
-const resultArea = document.getElementById("resultArea");
+function escapeHtml(value = "") {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 function formatTanggal(isoString) {
-    const d = new Date(isoString.replace(" ", "T"));
+    const d = new Date(String(isoString || "").replace(" ", "T"));
     if (isNaN(d.getTime())) return isoString;
     return d.toLocaleDateString("id-ID", {
         day: "numeric", month: "short", year: "numeric",
@@ -231,63 +256,54 @@ function prioritasClass(prioritas) {
     return "badge-prioritas-rendah";
 }
 
-function renderEmpty(message) {
-    resultArea.innerHTML = `
-        <div class="empty-state">
-            <div class="empty-icon">🔍</div>
-            <p>${message}</p>
-        </div>
-    `;
-}
-
-function renderError(message) {
-    resultArea.innerHTML = `
-        <div class="error-state">
-            <div class="error-icon">⚠️</div>
-            <p>${message}</p>
-        </div>
-    `;
-}
-
-function renderLoading() {
-    resultArea.innerHTML = `<div class="loading-state">Memuat riwayat laporan...</div>`;
-}
-
 function renderList(laporanList) {
 
     if (laporanList.length === 0) {
-        renderEmpty("Belum ada laporan yang tercatat untuk nomor HP ini.");
+        historyLookupCard.querySelector(".history-results").innerHTML = `
+            <div class="history-empty">
+                <span class="material-symbols-outlined" aria-hidden="true">inbox</span>
+                <p>Belum ada laporan yang tercatat untuk nomor HP ini.</p>
+            </div>
+        `;
+        scrollBottom();
         return;
     }
 
     const cards = laporanList.map(item => `
         <div class="laporan-card">
             <div class="laporan-card-top">
-                <div class="laporan-kategori">${item.kategori || "Tanpa kategori"}</div>
-                <div class="laporan-tanggal">${formatTanggal(item.created_at)}</div>
+                <div class="laporan-kategori">${escapeHtml(item.kategori || "Tanpa kategori")}</div>
+                <div class="laporan-tanggal">${escapeHtml(formatTanggal(item.created_at) || "-")}</div>
             </div>
-            <div class="laporan-ringkasan">${item.ringkasan || "-"}</div>
+            <div class="laporan-ringkasan">${escapeHtml(item.ringkasan || "-")}</div>
             <div class="badge-row">
-                <span class="badge ${statusClass(item.status)}">${item.status}</span>
-                <span class="badge ${prioritasClass(item.prioritas)}">Prioritas ${item.prioritas || "-"}</span>
+                <span class="badge ${statusClass(item.status)}">${escapeHtml(item.status || "Menunggu")}</span>
+                <span class="badge ${prioritasClass(item.prioritas)}">Prioritas ${escapeHtml(item.prioritas || "-")}</span>
             </div>
         </div>
     `).join("");
 
-    resultArea.innerHTML = `<div class="laporan-list">${cards}</div>`;
+    historyLookupCard.querySelector(".history-results").innerHTML = `<div class="laporan-list">${cards}</div>`;
+    scrollBottom();
+}
+
+function renderHistoryMessage(text, type = "info") {
+    historyLookupCard.querySelector(".history-results").innerHTML = `<p class="history-message ${type}">${escapeHtml(text)}</p>`;
+    scrollBottom();
 }
 
 async function cekRiwayat() {
-
+    const nomorHpInput = historyLookupCard.querySelector(".history-phone");
+    const cekBtn = historyLookupCard.querySelector(".history-submit");
     const nomorHp = nomorHpInput.value.trim();
-
     if (nomorHp === "") {
-        renderError("Masukkan nomor HP terlebih dahulu.");
+        renderHistoryMessage("Masukkan nomor HP terlebih dahulu.", "error");
+        nomorHpInput.focus();
         return;
     }
 
     cekBtn.disabled = true;
-    renderLoading();
+    renderHistoryMessage("Memuat riwayat laporan...");
 
     try {
 
@@ -303,54 +319,56 @@ async function cekRiwayat() {
     } catch (err) {
 
         console.error(err);
-        renderError("Gagal memuat riwayat. Pastikan koneksi Anda stabil dan coba lagi.");
+        renderHistoryMessage("Gagal memuat riwayat. Pastikan koneksi Anda stabil dan coba lagi.", "error");
 
     } finally {
 
         cekBtn.disabled = false;
 
     }
-
 }
 
-cekBtn.addEventListener("click", cekRiwayat);
+function openHistoryLookup() {
+    if (historyLookupCard) {
+        historyLookupCard.scrollIntoView({ behavior: "instant", block: "nearest" });
+        historyLookupCard.querySelector(".history-phone").focus();
+        return;
+    }
 
-nomorHpInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") cekRiwayat();
-});
+    historyLookupCard = document.createElement("div");
+    historyLookupCard.className = "message ai history-lookup";
+    historyLookupCard.innerHTML = `
+        <div class="bubble history-lookup-bubble">
+            <div class="history-lookup-heading">
+                <span class="material-symbols-outlined" aria-hidden="true">history</span>
+                <div>
+                    <h3>Cek status laporan</h3>
+                    <p>Masukkan nomor HP yang digunakan saat membuat laporan.</p>
+                </div>
+            </div>
+            <form class="history-search">
+                <label class="sr-only" for="historyPhoneInput">Nomor HP pelapor</label>
+                <input class="history-phone" id="historyPhoneInput" type="tel" placeholder="Contoh: 081234567890" autocomplete="tel">
+                <button class="history-submit" type="submit">
+                    <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                    Cari
+                </button>
+            </form>
+            <div class="history-results" aria-live="polite">
+                <p class="history-message">Riwayat laporan Anda akan muncul di sini.</p>
+            </div>
+        </div>
+    `;
 
-
-/* =====================================================
-   TAB BAR SWITCHING
-===================================================== */
-
-const tabButtons = document.querySelectorAll(".tab-btn");
-const views = document.querySelectorAll(".view");
-
-const headerTitle = document.getElementById("headerTitle");
-const headerSubtitle = document.getElementById("headerSubtitle");
-
-tabButtons.forEach(btn => {
-
-    btn.addEventListener("click", () => {
-
-        // Toggle active button
-        tabButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        // Toggle active view
-        const targetId = btn.dataset.tab;
-        views.forEach(v => v.classList.toggle("active", v.id === targetId));
-
-        // Update header sesuai tab
-        headerTitle.innerText = btn.dataset.title;
-
-        if (btn.dataset.mode === "chat") {
-            headerSubtitle.innerHTML = `<span class="online-dot"></span> Online`;
-        } else {
-            headerSubtitle.innerHTML = `Cek status laporan Anda`;
-        }
-
+    chatBody.appendChild(historyLookupCard);
+    historyLookupCard.querySelector(".history-search").addEventListener("submit", event => {
+        event.preventDefault();
+        cekRiwayat();
     });
+    historyLookupCard.querySelector(".history-phone").focus({ preventScroll: true });
+    scrollBottom();
+}
 
+document.querySelectorAll(".composer-shortcuts [data-action='history']").forEach(btn => {
+    btn.addEventListener("click", openHistoryLookup);
 });
